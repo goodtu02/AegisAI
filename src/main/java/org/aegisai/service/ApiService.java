@@ -13,22 +13,21 @@ import reactor.core.publisher.Mono;
 public class ApiService {
 
     private final WebClient webClient;
+
     @Autowired
     public ApiService(WebClient.Builder webClientBuilder) {
-        // 기본 URL 등 공통 설정을 여기서 할 수 있습니다.
-        this.webClient = webClientBuilder.baseUrl("https://api.example.com").build();
+        this.webClient = webClientBuilder
+                .baseUrl("https://api.com")
+                .build();
     }
 
-    private WebClient.Builder webClientBuilder;
-
     public Flux<VulnerabilitiesDto> request(AnalysisDto analysisDto) {
-        WebClient webClient = webClientBuilder.build();
 
-        return webClient.post() // GET -> POST (혹은 외부 API 스펙에 맞게)
-                .uri("/scan-endpoint") // 실제 요청할 경로
-                .bodyValue(analysisDto) // bodyValue 또는 body(BodyInserters.fromValue) 사용
+        return webClient.post()
+                .uri("/scan-endpoint")
+                .bodyValue(analysisDto)
                 .retrieve() // 응답 수신
-                .bodyToFlux(VulnerabilitiesDto.class); // String.class -> Dto.class
+                .bodyToFlux(VulnerabilitiesDto.class);
     }
 
 }

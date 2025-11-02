@@ -10,7 +10,7 @@ public class AnalysisDto {
 
     private Integer user_id;
 
-    private String status;
+    private String status; //PENDING, PROCESSING, COMPLETED, FAILED
 
     private String error_message;
 

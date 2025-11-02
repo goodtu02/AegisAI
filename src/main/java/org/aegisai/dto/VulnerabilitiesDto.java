@@ -1,4 +1,4 @@
 package org.aegisai.dto;
 
-public class VulnerabilityDto {
+public class VulnerabilitiesDto {
 }

@@ -17,14 +17,14 @@ public class ApiService {
     @Autowired
     public ApiService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
-                .baseUrl("https://api.com")
+                .baseUrl("https://alayna-distinctionless-harris.ngrok-free.app")
                 .build();
     }
 
     public Flux<VulnerabilitiesDto> request(AnalysisDto analysisDto) {
 
         return webClient.post()
-                .uri("/scan-endpoint")
+                .uri("/scan")
                 .bodyValue(analysisDto)
                 .retrieve() // 응답 수신
                 .bodyToFlux(VulnerabilitiesDto.class);

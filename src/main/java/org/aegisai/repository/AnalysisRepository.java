@@ -1,5 +1,6 @@
 package org.aegisai.repository;
 
+import org.aegisai.constant.AnalysisStatus;
 import org.aegisai.entity.Analysis;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,43 +14,47 @@ import java.util.Optional;
 @Repository
 public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
 
-    // 특정 사용자의 모든 분석 조회
-    List<Analysis> findByUser_UserId(Integer userId);
-
-    // 특정 사용자의 분석을 최신순으로 조회
-    List<Analysis> findByUser_UserIdOrderBySubmittedAtDesc(Integer userId);
-
-    // 상태별 분석 조회 (0: 대기, 2: 완료, 3: 실패)
-    List<Analysis> findByStatus(Integer status);
-
-    // 특정 사용자의 특정 상태 분석 조회
-    List<Analysis> findByUser_UserIdAndStatus(Integer userId, Integer status);
-
-    // 완료된 분석만 조회
-    @Query("SELECT a FROM Analysis a WHERE a.status = 2")
-    List<Analysis> findCompletedAnalyses();
+    // 상태별 분석 조회 (Enum 사용)
+    List<Analysis> findByStatus(AnalysisStatus status);
 
     // 대기 중인 분석만 조회
-    @Query("SELECT a FROM Analysis a WHERE a.status = 0")
+    @Query("SELECT a FROM Analysis a WHERE a.status = 'PENDING'")
     List<Analysis> findPendingAnalyses();
 
+    // 처리 중인 분석만 조회
+    @Query("SELECT a FROM Analysis a WHERE a.status = 'PROCESSING'")
+    List<Analysis> findProcessingAnalyses();
+
+    // 완료된 분석만 조회
+    @Query("SELECT a FROM Analysis a WHERE a.status = 'COMPLETED'")
+    List<Analysis> findCompletedAnalyses();
+
     // 실패한 분석만 조회
-    @Query("SELECT a FROM Analysis a WHERE a.status = 3")
+    @Query("SELECT a FROM Analysis a WHERE a.status = 'FAILED'")
     List<Analysis> findFailedAnalyses();
 
     // 특정 기간 내 분석 조회
     List<Analysis> findBySubmittedAtBetween(LocalDateTime start, LocalDateTime end);
 
-    // 특정 사용자의 최근 N개 분석 조회
-    List<Analysis> findTop10ByUser_UserIdOrderBySubmittedAtDesc(Integer userId);
+    // 최근 N개 분석 조회 (모든 사용자)
+    List<Analysis> findTop10ByOrderBySubmittedAtDesc();
 
     // 분석 ID로 상세 조회 (Vulnerability도 함께 가져오기)
     @Query("SELECT a FROM Analysis a LEFT JOIN FETCH a.vulnerabilities WHERE a.analysisId = :analysisId")
     Optional<Analysis> findByIdWithVulnerabilities(@Param("analysisId") Integer analysisId);
 
-    // 전체 분석 개수 (사용자별)
-    long countByUser_UserId(Integer userId);
+    // 전체 분석 개수
+    long count();
 
-    // 완료된 분석 개수 (사용자별)
-    long countByUser_UserIdAndStatus(Integer userId, Integer status);
+    // 상태별 분석 개수
+    long countByStatus(AnalysisStatus status);
+
+    // 최신순으로 모든 분석 조회
+    List<Analysis> findAllByOrderBySubmittedAtDesc();
+
+    // 특정 날짜 이후 분석 조회
+    List<Analysis> findBySubmittedAtAfter(LocalDateTime date);
+
+    // 특정 날짜 이전 분석 조회
+    List<Analysis> findBySubmittedAtBefore(LocalDateTime date);
 }

@@ -21,7 +21,7 @@ public class ApiController {
     }
 
     @PostMapping("/api/scan-vulnerability")
-    public List<VulnerabilitiesDto> requestApi(@RequestBody AnalysisDto analysisDto) {
+    public  List<VulnerabilitiesDto> requestApi(@RequestBody AnalysisDto analysisDto) {
 
         return apiService.request(analysisDto);
     }

@@ -85,17 +85,31 @@ public class ApiService {
     }
 
 
-    public String requestModel2(AnalysisDto analysisDto){
+    public String requestModel2(AnalysisDto analysisDto) {
         //fixed code generate
+        String codeSnippet = analysisDto.getInputcode();
+        if (codeSnippet == null || codeSnippet.trim().isEmpty()) {
+            System.err.println("API 호출 오류: Model 2 - 코드가 null이거나 비어있습니다.");
+            return "Error: Input code is empty"; // 오류 반환
+        }
+
+        // [!] 서버가 요구하는 정확한 JSON 페이로드 생성
+        // {"text": "...", "max_length": 512, "temperature": 0.1}
+        Map<String, Object> payload = Map.of(
+                "text", codeSnippet,       // "inputs"가 아니라 "text"
+                "max_length", 512,
+                "temperature", 0.1
+        );
+
+        // fixed code generate
         return webClient_model2.post()
                 .uri("/generate")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(analysisDto)
+                .bodyValue(payload) // [✅] 'analysisDto' 대신 생성한 'payload' 전송
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
-
     public String requestModel3(AnalysisDto analysisDto){
         //judgement reason generate for vulnerable status
         return geminiService.reasonCodebert(analysisDto.getInputcode());

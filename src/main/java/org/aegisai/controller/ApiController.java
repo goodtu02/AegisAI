@@ -26,18 +26,29 @@ public class ApiController {
     @PostMapping("/api/scan-vulnerability")
     public ResponseDto requestApi(@RequestBody AnalysisDto analysisDto) {
         ResponseDto body;
-        Integer result = apiService.requestModel1(analysisDto); //code bert
+
+        // 1. CodeBERT로 취약점 여부 확인
+        Integer result = apiService.requestModel1(analysisDto);
+        
         if (result==0) {
+            // 안전한 코드인 경우
             body = new ResponseDto("200", "안전한 코드입니다.",0);
             return ResponseEntity.ok(body).getBody();
         }
         else {
             body = new ResponseDto("VULNERABLE", "취약한 코드입니다.",1);
         }
+        
+
+        String fixedCode = apiService.requestModel2(analysisDto);
+        analysisDto.setFixedcode(fixedCode);
+        
         body.setLlmresponse3(apiService.requestModel3(analysisDto)); //llm(프롬프트 필요)
         body.setLlmresponse2(apiService.requestModel2(analysisDto)); //code t5
         body.setLlmresponse3_1(apiService.requestModel3_1(analysisDto)); //llm(프롬프트 필요)
-        List<VulnerabilitiesDto> vulnerabilities = apiService.entityService(apiService.requestModel4(analysisDto), analysisDto); //guide llm
+        List<VulnerabilitiesDto> vulnerabilities = apiService.requestModel4(analysisDto);
+        apiService.entityService(vulnerabilities, analysisDto); //guide llm
+        
         //프롬프트 필요
         body.setVulnerabilities(vulnerabilities);
 

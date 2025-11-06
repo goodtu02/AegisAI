@@ -88,6 +88,7 @@ public class ApiService {
     public String requestModel2(AnalysisDto analysisDto){
         //fixed code generate
         return webClient_model2.post()
+                .uri("/generate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(analysisDto)
                 .retrieve()

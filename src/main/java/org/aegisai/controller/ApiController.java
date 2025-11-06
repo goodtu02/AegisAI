@@ -32,22 +32,19 @@ public class ApiController {
         
         if (result==0) {
             // 안전한 코드인 경우
-            body = new ResponseDto("200", "안전한 코드입니다.",0);
+            body = new ResponseDto("200", "안전한 코드입니다.");
             return ResponseEntity.ok(body).getBody();
         }
         else {
-            body = new ResponseDto("VULNERABLE", "취약한 코드입니다.",1);
+            body = new ResponseDto("VULNERABLE", "취약한 코드입니다.");
         }
-        
 
-        String fixedCode = apiService.requestModel2(analysisDto);
-        analysisDto.setFixedcode(fixedCode);
         
-        body.setLlmresponse3(apiService.requestModel3(analysisDto)); //llm(프롬프트 필요)
-        body.setLlmresponse2(apiService.requestModel2(analysisDto)); //code t5
-        body.setLlmresponse3_1(apiService.requestModel3_1(analysisDto)); //llm(프롬프트 필요)
-        List<VulnerabilitiesDto> vulnerabilities = apiService.requestModel4(analysisDto);
-        apiService.entityService(vulnerabilities, analysisDto); //guide llm
+        body.setXaiDetectionExplanation(apiService.requestModel3(analysisDto)); //llm(프롬프트 필요)
+        analysisDto.setFixedcode(apiService.requestModel2(analysisDto)); //code t5
+        body.setXaiFixExplanation(apiService.requestModel3_1(analysisDto)); //llm(프롬프트 필요)
+        List<VulnerabilitiesDto> vulnerabilities = apiService.requestModel4(analysisDto); //guide llm
+        apiService.entityService(vulnerabilities, analysisDto);
         
         //프롬프트 필요
         body.setVulnerabilities(vulnerabilities);

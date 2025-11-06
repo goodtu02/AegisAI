@@ -1,8 +1,6 @@
 package org.aegisai.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.aegisai.constant.AnalysisStatus;
-import org.aegisai.constant.SeverityStatus;
 
 import org.aegisai.dto.AnalysisDto;
 import org.aegisai.dto.VulnerabilitiesDto;
@@ -17,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,7 +118,7 @@ public class ApiService {
     }
 
     @Transactional // 트랜잭션 필수
-    public List<VulnerabilitiesDto> entityService(List<VulnerabilitiesDto> vulnerabilities, AnalysisDto analysisDto) {
+    public void entityService(List<VulnerabilitiesDto> vulnerabilities, AnalysisDto analysisDto) {
         
         // 1. 외부 API에서 취약점 데이터 가져오기
 
@@ -152,7 +148,6 @@ public class ApiService {
             System.out.println("Vulnerability " + vulEntities.size() + "개 저장 완료");
             
         }
-        return vulnerabilities;
     }
     
     // String을 SeverityStatus Enum으로 변환하는 헬퍼 메서드 (Enum 사용 안함)

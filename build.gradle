@@ -44,7 +44,6 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     
     implementation 'com.google.cloud:google-cloud-aiplatform:3.47.0'
->>>>>>> 772c1d3c5e3133c25c137892e1a511100376095c
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'

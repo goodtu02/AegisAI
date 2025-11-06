@@ -1,7 +1,8 @@
 // fetch 기반 API 클라이언트
 
 // API 기본 설정
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = 'http://15.164.13.20:8080';
 const API_TIMEOUT = 30000; // 30초
 
 // 타임아웃 기능을 추가한 fetch

@@ -20,9 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ApiService {
-    private WebClient webClient_model1;
-    private WebClient webClient_model2;
-    private WebClient webClient_model3;
+    private final WebClient webClient_model1;
+    private final WebClient webClient_model2;
     private final GeminiService geminiService;
     private final AnalysisRepository analysisRepository;
     private final VulnerabilityRepository vulnerabilityRepository;

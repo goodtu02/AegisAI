@@ -16,7 +16,7 @@ export default function EnhancedSecurityChecker() {
   const textareaRef = React.useRef(null);
 
   // 실시간 토큰 및 문자 카운터 수정
-useEffect(() => {
+  useEffect(() => {
   const debounceMs = 300;
   let mounted = true;
   const timer = setTimeout(async () => {
@@ -26,7 +26,6 @@ useEffect(() => {
 
     if (!inputCode || inputCode.trim().length === 0) {
       setTokenCount(0);
-      // 기존 취약점 감지는 그대로 실행
       detectVulnerableLinesRealtime();
       return;
     }
@@ -42,25 +41,39 @@ useEffect(() => {
 
       const data = await res.json();
 
-      // 유연하게 키 처리: tokens | token_count, chars | char_count
-      const tokens = (data.tokens ?? data.token_count) ?? null;
-      const charsFromServer = (data.chars ?? data.char_count) ?? null;
+      // FastAPI에서 반환한 tokens가 숫자(int)인지 확인
+      const tokenCountFromServer =
+        typeof data.tokens === "number"
+          ? data.tokens
+          : typeof data.token_count === "number"
+          ? data.token_count
+          : null;
+
+      const charsFromServer =
+        typeof data.chars === "number"
+          ? data.chars
+          : typeof data.char_count === "number"
+          ? data.char_count
+          : null;
 
       if (!mounted) return;
 
-      if (tokens !== null) setTokenCount(tokens);
-      else {
-        // 서버가 토큰을 안줬으면 폴백
+      // ✅ FastAPI 값 우선 반영
+      if (tokenCountFromServer !== null && tokenCountFromServer > 0) {
+        setTokenCount(tokenCountFromServer);
+      } else {
+        // 🚫 서버가 반환하지 못했을 때만 폴백
         const fallback = inputCode.split(/\s+/).filter(t => t.length > 0).length;
         setTokenCount(fallback);
       }
 
-      if (charsFromServer !== null) setCharacterCount(charsFromServer);
-      else setCharacterCount(charsLocal);
-
+      if (charsFromServer !== null) {
+        setCharacterCount(charsFromServer);
+      } else {
+        setCharacterCount(charsLocal);
+      }
     } catch (err) {
       console.error("토큰 카운트 실패:", err);
-      // 네트워크/서버 실패 시 폴백
       const fallback = inputCode.split(/\s+/).filter(t => t.length > 0).length;
       if (mounted) {
         setTokenCount(fallback);
@@ -68,7 +81,6 @@ useEffect(() => {
       }
     }
 
-    // 기존 취약점 라인 감지
     detectVulnerableLinesRealtime();
   }, debounceMs);
 

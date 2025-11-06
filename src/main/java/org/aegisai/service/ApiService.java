@@ -51,7 +51,7 @@ public class ApiService {
 
     public Integer requestModel1(AnalysisDto analysisDto){
         //vulnerable status generate
-        String codeSnippet = analysisDto.getInputcode();
+        String codeSnippet = analysisDto.getCode();
         if (codeSnippet == null || codeSnippet.trim().isEmpty()) {
             System.err.println("API 호출 오류: Model 1 - 코드가 null이거나 비어있습니다.");
             return -1; // 오류 코드 반환
@@ -87,7 +87,7 @@ public class ApiService {
 
     public String requestModel2(AnalysisDto analysisDto) {
         //fixed code generate
-        String codeSnippet = analysisDto.getInputcode();
+        String codeSnippet = analysisDto.getCode();
         if (codeSnippet == null || codeSnippet.trim().isEmpty()) {
             System.err.println("API 호출 오류: Model 2 - 코드가 null이거나 비어있습니다.");
             return "Error: Input code is empty"; // 오류 반환
@@ -112,20 +112,20 @@ public class ApiService {
     }
     public String requestModel3(AnalysisDto analysisDto){
         //judgement reason generate for vulnerable status
-        return geminiService.reasonCodebert(analysisDto.getInputcode());
+        return geminiService.reasonCodebert(analysisDto.getCode());
 
     }
 
     public String requestModel3_1(AnalysisDto analysisDto){
         //judgement reason generate for code fix
-        return geminiService.reasonCodet5(analysisDto.getInputcode(), analysisDto.getFixedcode());
+        return geminiService.reasonCodet5(analysisDto.getCode(), analysisDto.getFixedcode());
 
     }
 
     public List<VulnerabilitiesDto> requestModel4(AnalysisDto analysisDto) {
         try {
             List<VulnerabilitiesDto> vulnerabilities = geminiService.analyzeVulnerabilities(
-                    analysisDto.getInputcode(),
+                    analysisDto.getCode(),
                     analysisDto.getFixedcode()
             );
 
@@ -148,7 +148,7 @@ public class ApiService {
 
         // 2. Analysis 엔티티 생성 및 저장
         Analysis analysis = Analysis.builder()
-                .inputCode(analysisDto.getInputcode())
+                .inputCode(analysisDto.getCode())
                 .fixedCode(analysisDto.getFixedcode())
                 .build();
         

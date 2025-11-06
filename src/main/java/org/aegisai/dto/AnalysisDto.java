@@ -10,7 +10,7 @@ public class AnalysisDto {
 
     @Getter
     @Setter
-    private String inputcode;
+    private String code;
 
     @Getter
     @Setter

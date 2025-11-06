@@ -26,7 +26,7 @@ public class ApiController {
     @PostMapping("/api/scan-vulnerability")
     public ResponseDto requestApi(@RequestBody AnalysisDto analysisDto) throws InterruptedException {
         ResponseDto body;
-        System.out.println("Received DTO inputcode: " + analysisDto.getInputcode());
+        System.out.println("Received DTO inputcode: " + analysisDto.getCode());
         // 1. CodeBERT로 취약점 여부 확인
         Integer result = apiService.requestModel1(analysisDto);
         

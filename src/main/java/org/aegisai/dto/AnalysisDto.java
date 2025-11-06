@@ -14,5 +14,7 @@ public class AnalysisDto {
     @Setter
     private String language;
 
+
+
 }
 

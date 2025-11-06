@@ -19,8 +19,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ApiService {
-
-    private final WebClient webClient;
+    private WebClient webClient_model1;
+    private WebClient webClient_model2;
+    private WebClient webClient_model3;
     private final AnalysisRepository analysisRepository;
     private final VulnerabilityRepository vulnerabilityRepository;
 
@@ -28,24 +29,58 @@ public class ApiService {
     public ApiService(WebClient.Builder webClientBuilder,
                       AnalysisRepository analysisRepository,
                       VulnerabilityRepository vulnerabilityRepository) {
-        this.webClient = webClientBuilder
+        WebClient webClient_model1 = webClientBuilder
+                .baseUrl("https://api-inference.huggingface.co/models/mrm8488/codebert-base-finetuned-detect-insecure-code")
+                .build();
+        WebClient webClient_model2 = webClientBuilder
+                .baseUrl("https://38b4f941-fec7-45cf-8e5e-0bbf1bf2336d.mock.pstmn.io")
+                .build();
+        WebClient webClient_model3 = webClientBuilder
                 .baseUrl("https://38b4f941-fec7-45cf-8e5e-0bbf1bf2336d.mock.pstmn.io")
                 .build();
         this.analysisRepository = analysisRepository;
         this.vulnerabilityRepository = vulnerabilityRepository;
     }
 
-    @Transactional // 트랜잭션 필수
-    public List<VulnerabilitiesDto> request(AnalysisDto analysisDto) {
-        
-        // 1. 외부 API에서 취약점 데이터 가져오기
-        List<VulnerabilitiesDto> vulnerabilities = webClient.post()
+    public Integer requestModel1(AnalysisDto analysisDto){
+        return webClient_model1.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(analysisDto)
+                .retrieve()
+                .bodyToMono(Integer.class) // Dto 목록이 아닌 Integer로 직접 받음
+                .block();
+    }
+    public String requestModel2(AnalysisDto analysisDto){
+        return webClient_model2.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(analysisDto)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+    public String requestModel3(AnalysisDto analysisDto){
+        return webClient_model2.post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(analysisDto)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+    public List<VulnerabilitiesDto> requestModel4(AnalysisDto analysisDto){
+        List<VulnerabilitiesDto> vulnerabilities = webClient_model2.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(analysisDto)
                 .retrieve()
                 .bodyToFlux(VulnerabilitiesDto.class)
                 .collectList()
                 .block();
+        return vulnerabilities;
+    }
+    @Transactional // 트랜잭션 필수
+    public List<VulnerabilitiesDto> entityService(List<VulnerabilitiesDto> vulnerabilities, AnalysisDto analysisDto) {
+        
+        // 1. 외부 API에서 취약점 데이터 가져오기
+
 
         // 2. Analysis 엔티티 생성 및 저장
         Analysis analysis = Analysis.builder()
@@ -94,7 +129,6 @@ public class ApiService {
             analysisRepository.save(savedAnalysis);
             System.out.println("Analysis 카운트 업데이트 완료");
         }
-
         return vulnerabilities;
     }
     

@@ -60,7 +60,7 @@ public class ApiService {
         Map<String, String> payload = Map.of("inputs", codeSnippet);
 
         return webClient_model1.post()
-                .uri("/")
+                //.uri("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(payload)
                 .retrieve()

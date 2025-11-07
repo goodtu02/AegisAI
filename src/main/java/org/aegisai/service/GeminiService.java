@@ -42,9 +42,9 @@ public class GeminiService {
     public String reasonCodebert(String vulnerableCode) {
         try {
             // 1. 프롬프트 생성 (buildPrompt 메서드는 삭제 가능)
-            String prompt = String.format(
+            String promptTemplate =
                     "당신은 Java 보안 분석 전문가입니다.\n\n" +
-                            "# 분석 대상 코드:\n```java\n{SOURCE_CODE}\n```\n\n" + vulnerableCode,
+                            "# 분석 대상 코드:\n```java\n%s\n```\n\n" +
                     "# AI 모델(CodeBERT) 분석 결과:\n- " +
                             "판단: Label_1\n- " +
                             "# 요청사항:\n위 코드가 'Label_1'로 분류된 기술적 근거를 설명해주세요.\n\n" +
@@ -58,8 +58,11 @@ public class GeminiService {
                             "2\"\n  ],\n  \"confidence\": \"" +
                            // "신뢰도가 {CONFIDENCE}%인 이유에 대한 간단한 설명\"\n}\n\n" +
                             "주의사항:\n- JSON만 응답하고 다른 텍스트는 포함하지 마세요\n- " +
-                            "마크다운 코드 블록(```)을 사용하지 마세요\n- 기술적이고 구체적으로 설명하세요",
-                    vulnerableCode
+                            "마크다운 코드 블록(```)을 사용하지 마세요\n- 기술적이고 구체적으로 설명하세요";
+
+            String prompt = String.format(
+                    promptTemplate,
+                    vulnerableCode // %s에 해당하는 값만 전달
             );
 
             // 2. API 호출
@@ -81,8 +84,12 @@ public class GeminiService {
     public String reasonCodet5(String vulnerableCode, String fixedcode) {
         try {
             // 1. 프롬프트 생성 (buildPrompt 메서드는 삭제 가능)
-            String prompt = "당신은 Java 보안 및 코드 리팩토링 전문가입니다.\n\n# 원본 코드 (취약점 존재):\n```java\n{ORIGINAL_CODE}\n```\n\n# AI 모델(CodeT5)이 수정한 코드:\n```java\n{FIXED_CODE}\n```\n\n# 취약점 유형: {VULNERABILITY_TYPE}\n\n# 요청사항:\nCodeT5가 위와 같이 코드를 수정한 기술적 근거와 보안 개선 사항을 설명해주세요.\n\n다음 JSON 형식으로 응답해주세요:\n{\n  \"fixReasoning\": \"CodeT5가 이렇게 수정한 주요 이유 (150자 이내)\",\n  \"changedPatterns\": [\n    {\n      \"before\": \"변경 전 코드 패턴\",\n      \"after\": \"변경 후 코드 패턴\",\n      \"reason\": \"이 변경이 필요한 이유\"\n    }\n  ],\n  \"securityImprovements\": [\n    \"개선된 보안 사항 1\",\n    \"개선된 보안 사항 2\"\n  ],\n  \"preventedAttacks\": [\n    \"이 수정으로 방지할 수 있는 공격 유형 1\",\n    \"이 수정으로 방지할 수 있는 공격 유형 2\"\n  ],\n  \"additionalRecommendations\": \"추가 보안 권장사항 (선택사항)\"\n}\n\n주의사항:\n- JSON만 응답하고 다른 텍스트는 포함하지 마세요\n- 마크다운 코드 블록(```)을 사용하지 마세요\n- 변경 사항을 구체적으로 비교 설명하세요";
-
+            String promptTemplate = "당신은 Java 보안 및 코드 리팩토링 전문가입니다.\n\n" +
+                    "# 원본 코드 (취약점 존재):\n```java\n%s\n```\n\n" + // %s 사용
+                    "# AI 모델(CodeT5)이 수정한 코드:\n```java\n%s\n```\n\n" + // %s 사용
+                    "# 취약점 유형: {VULNERABILITY_TYPE}\n\n" + // (이 유형도 파라미터로 받아야 함)
+                    "# 요청사항:\nCodeT5가 위와 같이 코드를 수정한 기술적 근거와 보안 개선 사항을 설명해주세요.\n\n다음 JSON 형식으로 응답해주세요:\n{\n  \"fixReasoning\": \"CodeT5가 이렇게 수정한 주요 이유 (150자 이내)\",\n  \"changedPatterns\": [\n    {\n      \"before\": \"변경 전 코드 패턴\",\n      \"after\": \"변경 후 코드 패턴\",\n      \"reason\": \"이 변경이 필요한 이유\"\n    }\n  ],\n  \"securityImprovements\": [\n    \"개선된 보안 사항 1\",\n    \"개선된 보안 사항 2\"\n  ],\n  \"preventedAttacks\": [\n    \"이 수정으로 방지할 수 있는 공격 유형 1\",\n    \"이 수정으로 방지할 수 있는 공격 유형 2\"\n  ],\n  \"additionalRecommendations\": \"추가 보안 권장사항 (선택사항)\"\n}\n\n주의사항:\n- JSON만 응답하고 다른 텍스트는 포함하지 마세요\n- 마크다운 코드 블록(```)을 사용하지 마세요\n- 변경 사항을 구체적으로 비교 설명하세요";
+            String prompt = String.format(promptTemplate, vulnerableCode, fixedcode);
             // 2. API 호출
             GenerateContentResponse response = this.model.generateContent(prompt);
 

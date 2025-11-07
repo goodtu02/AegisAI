@@ -336,10 +336,10 @@ export default function EnhancedSecurityChecker() {
   // Statistics 계산 (백엔드에서 안 주는 경우)
   const calculateStatistics = (vulnerabilities) => {
     return {
-      critical: vulnerabilities.filter(v => v.severity === 'Critical').length,
-      high: vulnerabilities.filter(v => v.severity === 'High').length,
-      medium: vulnerabilities.filter(v => v.severity === 'Medium').length,
-      low: vulnerabilities.filter(v => v.severity === 'Low').length
+      critical: vulnerabilities.filter(v => v.severity === 'critical').length,
+      high: vulnerabilities.filter(v => v.severity === 'high').length,
+      medium: vulnerabilities.filter(v => v.severity === 'medium').length,
+      low: vulnerabilities.filter(v => v.severity === 'low').length
     };
   };
 

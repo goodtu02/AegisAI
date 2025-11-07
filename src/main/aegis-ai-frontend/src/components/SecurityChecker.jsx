@@ -225,6 +225,7 @@ export default function EnhancedSecurityChecker() {
         console.log('🔍 Final Score:', Score); // 최종 점수도!
         
         
+        
         setResult({
           isVulnerable: vulnerabilities.length > 0,
           vulnerabilities: vulnerabilities, // xaiDetectionExplanation, xaiFixExplanation 포함

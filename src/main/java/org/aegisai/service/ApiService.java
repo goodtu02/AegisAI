@@ -9,6 +9,7 @@ import org.aegisai.entity.Vulnerability;
 import org.aegisai.repository.AnalysisRepository;
 import org.aegisai.repository.VulnerabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,10 @@ public class ApiService {
     private final GeminiService geminiService;
     private final AnalysisRepository analysisRepository;
     private final VulnerabilityRepository vulnerabilityRepository;
-    private static final String HUGGINGFACE_API_TOKEN = "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"; // 실제 토큰으로 대체 필요
+
+    @Value("${huggingface.api.token}")
+    private String HUGGINGFACE_API_TOKEN;
+
     @Autowired
     public ApiService(WebClient.Builder webClientBuilder,
                       AnalysisRepository analysisRepository,

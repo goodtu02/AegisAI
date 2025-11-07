@@ -9,6 +9,7 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 
 import org.aegisai.dto.VulnerabilitiesDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,9 +18,12 @@ import java.util.List;
 
 @Service
 public class GeminiService {
-    // input_test_api.py와 동일한 설정 값 사용
-    private final String PROJECT_ID = "gen-lang-client-0539365210";
-    private final String LOCATION = "us-central1";
+
+    @Value("${spring.ai.vertex.ai.gemini.project-id}")
+    private String PROJECT_ID;
+    @Value("${spring.ai.vertex.ai.gemini.location}")
+    private String LOCATION;
+
     // Vertex AI에서 사용하는 Gemini 모델 엔드포인트 URL
     private final String MODEL_NAME = "gemini-2.0-flash-exp";
     private final GenerativeModel model;

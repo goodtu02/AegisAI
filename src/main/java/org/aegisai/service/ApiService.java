@@ -120,7 +120,7 @@ public class ApiService {
 
     public String requestModel3_1(AnalysisDto analysisDto){
         //judgement reason generate for code fix
-        return geminiService.reasonCodet5(analysisDto.getCode(), analysisDto.getFixedcode());
+        return geminiService.reasonCodet5(analysisDto.getCode(), analysisDto.getFixedCode());
 
     }
 
@@ -128,7 +128,7 @@ public class ApiService {
         try {
             List<VulnerabilitiesDto> vulnerabilities = geminiService.analyzeVulnerabilities(
                     analysisDto.getCode(),
-                    analysisDto.getFixedcode()
+                    analysisDto.getFixedCode()
             );
 
             // 3. 결과 로깅 (선택사항)
@@ -151,7 +151,7 @@ public class ApiService {
         // 2. Analysis 엔티티 생성 및 저장
         Analysis analysis = Analysis.builder()
                 .inputCode(analysisDto.getCode())
-                .fixedCode(analysisDto.getFixedcode())
+                .fixedCode(analysisDto.getFixedCode())
                 .build();
         
         Analysis savedAnalysis = analysisRepository.save(analysis);

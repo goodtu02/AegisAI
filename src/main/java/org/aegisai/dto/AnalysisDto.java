@@ -14,7 +14,7 @@ public class AnalysisDto {
 
     @Getter
     @Setter
-    private String fixedcode;
+    private String fixedCode;
 
 }
 

@@ -17,7 +17,6 @@
 # 2. Team Members (팀원 및 팀 소개)
 | 김성은 | 권태욱 | 이정재 | 황지원 |
 |:------:|:------:|:------:|:------:|
-| [프로필 사진] | [프로필 사진] | [프로필 사진] | [프로필 사진] |
 | [역할, 예: PL / Backend] | [역할, 예: AI / Data] | [역할, 예: Frontend] | [역할, 예: Backend / Infra] |
 | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) |
 

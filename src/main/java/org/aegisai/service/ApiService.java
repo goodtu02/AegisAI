@@ -30,17 +30,14 @@ public class ApiService {
     private final VulnerabilityRepository vulnerabilityRepository;
 
 
-    private String HUGGINGFACE_API_TOKEN;
-
     @Autowired
     public ApiService(WebClient.Builder webClientBuilder,
                       AnalysisRepository analysisRepository,
                       VulnerabilityRepository vulnerabilityRepository,
                       GeminiService geminiService, @Value("${huggingface.api.token}")String apiToken) {
-        this.HUGGINGFACE_API_TOKEN = apiToken;
         this.webClient_model1 = webClientBuilder //codebert
                 .baseUrl("https://router.huggingface.co/hf-inference/models/mrm8488/codebert-base-finetuned-detect-insecure-code")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + HUGGINGFACE_API_TOKEN)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiToken)
                 .build();
 
         this.webClient_model2 = webClientBuilder //code t5

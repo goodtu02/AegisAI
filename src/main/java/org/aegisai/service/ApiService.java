@@ -30,21 +30,18 @@ public class ApiService {
     private final VulnerabilityRepository vulnerabilityRepository;
 
 
-    private String HUGGINGFACE_API_TOKEN;
-
     @Autowired
     public ApiService(WebClient.Builder webClientBuilder,
                       AnalysisRepository analysisRepository,
                       VulnerabilityRepository vulnerabilityRepository,
                       GeminiService geminiService, @Value("${huggingface.api.token}")String apiToken) {
-        this.HUGGINGFACE_API_TOKEN = apiToken;
         this.webClient_model1 = webClientBuilder //codebert
                 .baseUrl("https://router.huggingface.co/hf-inference/models/mrm8488/codebert-base-finetuned-detect-insecure-code")
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + HUGGINGFACE_API_TOKEN)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiToken)
                 .build();
 
         this.webClient_model2 = webClientBuilder //code t5
-                .baseUrl("http://34.47.124.100:8000")
+                .baseUrl("http://34.50.3.152:8000") //
                 .build();
         
         this.analysisRepository = analysisRepository;
@@ -111,6 +108,27 @@ public class ApiService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        /*
+        // 🆕 fixed code generate - 변수에 저장
+        String fixedCode = webClient_model2.post()
+                .uri("/generate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(payload)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        // 🆕 줄바꿈 처리: \\n을 실제 줄바꿈(\n)으로 변환
+        if (fixedCode != null) {
+            fixedCode = fixedCode.replace("\\n", "\n");
+            // 필요하면 탭 문자도 처리
+            fixedCode = fixedCode.replace("\\t", "\t");
+        }
+
+        return fixedCode;
+         */
+
     }
     public String requestModel3(AnalysisDto analysisDto){
         //judgement reason generate for vulnerable status
@@ -174,6 +192,37 @@ public class ApiService {
             System.out.println("Vulnerability " + vulEntities.size() + "개 저장 완료");
             
         }
+    }
+
+    // 🆕securityScore 계산 메서드
+    public Integer calculateSecurityScore(List<VulnerabilitiesDto> vulnerabilities) {
+        if (vulnerabilities == null || vulnerabilities.isEmpty()) {
+            return 100;
+        }
+
+        int totalDeduction = 0;
+
+        for (VulnerabilitiesDto vuln : vulnerabilities) {
+            String severity = vuln.getSeverity();
+            if (severity == null) continue;
+
+            switch (severity) {
+                case "Critical":
+                    totalDeduction += 25;
+                    break;
+                case "High":
+                    totalDeduction += 15;
+                    break;
+                case "Medium":
+                    totalDeduction += 10;
+                    break;
+                case "Low":
+                    totalDeduction += 5;
+                    break;
+            }
+        }
+
+        return Math.max(0, 100 - totalDeduction);
     }
     
     // String을 SeverityStatus Enum으로 변환하는 헬퍼 메서드 (Enum 사용 안함)

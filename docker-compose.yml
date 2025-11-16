@@ -1,0 +1,28 @@
+# 도커 컴포즈 파일 버전
+version: '3.8'
+
+# 실행할 서비스(컨테이너) 목록
+services:
+  # 서비스 이름 (컨테이너 이름으로 사용됨)
+  aegis:
+    # Dockerfile이 있는 현재 폴더(.)에서 이미지를 빌드합니다.
+    build: .
+    # 빌드된 이미지의 이름을 'aegis'로 지정합니다.
+    image: aegis
+    # 컨테이너 이름을 'aegis'로 설정합니다. (--name)
+    container_name: aegis
+
+    # 포트 매핑 (-p 8080:8080)
+    ports:
+      - "8080:8080"
+
+    # 볼륨 마운트 (-v ...:Z)
+    volumes:
+      - /home/ssm-user/googleapi_key.json:/app/credentials.json:Z
+
+    # 환경 변수 (-e)
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+
+    # 항상 재시작 (서버가 켜지거나, 앱이 예상치 못하게 종료되면 자동 재시작)
+    restart: always

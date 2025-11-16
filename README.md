@@ -17,8 +17,8 @@
 # 2. Team Members (팀원 및 팀 소개)
 | 김성은 | 권태욱 | 이정재 | 황지원 |
 |:------:|:------:|:------:|:------:|
-| [역할, 예: PL / Backend] | [역할, 예: AI / Data] | [역할, 예: Frontend] | [역할, 예: Backend / Infra] |
-| [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) |
+| [Backend] | [Backend] | [Ai/Data] | [Frontend] |
+| [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/goodtu02]) | [GitHub]([https://github.com/링크]) | [GitHub]([https://github.com/링크]) |
 
 <br/>
 <br/>
@@ -92,28 +92,33 @@
 
 # 6. Project Structure (프로젝트 구조)
 ```plaintext
-aegis-ai/
-├── frontend-react/        # React + Vite 프론트엔드
-│   ├── public/
-│   ├── src/
-│   │   ├── components/    # 재사용 UI 컴포넌트
-│   │   ├── pages/         # 페이지별 컴포넌트
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   └── package.json
-│
-├── backend-spring/        # Spring Boot 백엔드
-│   ├── src/main/java/com/aegisai/
-│   │   ├── controller/    # API 컨트롤러
-│   │   ├── service/       # 비즈니스 로직
-│   │   ├── model/         # 데이터 모델
-│   │   └── repository/    # DB 리포지토리
-│   └── build.gradle
-│
-├── ai-python/             # AI 모델 서빙 (Python/Flask or FastAPI)
-│   ├── models/            # GraphCodeBERT, CodeT5 모델 파일
-│   ├── app.py             # AI 모델 API 서버
-│   └── requirements.txt
-│
-├── .gitignore
-└── README.md              # 프로젝트 문서
+AegisAi
+├── .gradle/                  # Gradle 빌드 시스템
+├── build/                    # 빌드 산출물
+├── gradle/                   # Gradle Wrapper
+└── src/                      # 소스 코드 루트
+    ├── main/
+    │   ├── aegis-ai-frontend/  # React + Vite 프론트엔드
+    │   │   ├── dist/           # (프론트엔드 빌드 산출물)
+    │   │   ├── node_modules/   # (Node.js 의존성)
+    │   │   └── [public/, src/, package.json 등 프론트엔드 소스]
+    │   │
+    │   ├── java/                 # Spring Boot 백엔드 소스 코드
+    │   │   └── org/
+    │   │       └── aegisai/
+    │   │           ├── config/
+    │   │           ├── constant/
+    │   │           ├── controller/
+    │   │           ├── dto/
+    │   │           ├── entity/
+    │   │           ├── repository/
+    │   │           └── service/
+    │   │
+    │   └── resources/            # Spring Boot 리소스
+    │       └── static/           # 정적 파일 (빌드된 프론트엔드 서빙)
+    │
+    └── test/                     # 백엔드 테스트 코드
+        └── java/
+            └── org/
+                └── aegisai/
+                    └── service/

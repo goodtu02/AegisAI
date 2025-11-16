@@ -37,7 +37,6 @@ out/
 .vscode/
 
 # Local configuration
-application-local.properties
 application-local.yml
 
 # Environment variables
